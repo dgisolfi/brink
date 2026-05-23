@@ -29,7 +29,7 @@ int loop(std::string file_path) {
         return 1;
     }
     keypad(editor_win, TRUE);
-
+    
     brink::Sync sync(file_path, editor_win);
     int ret = sync.load();
     if (ret > 0) {
@@ -49,7 +49,10 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     std::string file_path = argv[1];
-    
+    if (brink::file_exists(file_path) > 0) {
+        return 1;
+    }
+
     init();
     loop(file_path);
 

@@ -23,6 +23,7 @@ namespace brink {
     int Sync::save() {
         Sync::file(FALSE);
         // TODO: Delete swap file
+        brink::del_file(swap_file_path);
         return 0;
     }
 
@@ -63,6 +64,12 @@ namespace brink {
             buffer[row].pop_back();
         }
         
+        Sync::screen();
+        Sync::file();
+    }
+
+    void Sync::new_line() {
+        buffer.push_back("\n");
         Sync::screen();
         Sync::file();
     }

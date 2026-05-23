@@ -47,7 +47,10 @@ namespace brink {
             case KEY_LEFT:
             case KEY_RIGHT: 
             case KEY_BACKSPACE: cur_move(sync, key); break;
-            case KEY_ENTER: cur_move(sync, KEY_DOWN); break;
+            case KEY_ENTER: 
+                sync.new_line();
+                cur_move(sync, KEY_DOWN);
+                break;
             case 's' & 0x1F: sync.save(); break;
             case 'c' & 0x1F:
             case 27: quit(sync); break;
