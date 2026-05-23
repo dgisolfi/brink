@@ -1,5 +1,6 @@
 #include <iostream>
 #include "sync.hpp"
+#include "keys.hpp"
 
 void init() {
     initscr();
@@ -30,9 +31,8 @@ int loop(std::string file_path) {
     }
 
     while (status == 0) {
-        // Main editor loop
-
-        // Check for mode switch / quit
+        refresh();
+        int key = handle_key_press(sync);
     }
 
     return 0;
@@ -48,10 +48,6 @@ int main(int argc, char* argv[]) {
     init();
 
     loop(file_path);
-
-    // Check if file exists, open it for editing if so
-
-    // else create a new file
 
     return 0;
 }

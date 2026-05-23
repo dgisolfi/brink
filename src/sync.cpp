@@ -29,6 +29,13 @@ namespace brink {
 
     void Sync::file() {
         // Skip for now to avoid saving files
+        return;
+        std::ofstream out_file(file_path, std::ios::trunc);
+        if (out_file.is_open()) {
+            for (const auto& line: buffer) {
+                out_file << line << "\n";
+            }
+        }
     }
 
     void Sync::add_str(int row, int col, const std::string& str) {

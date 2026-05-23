@@ -12,11 +12,11 @@ namespace brink {
     class Sync {
         private:
             std::vector<std::string> buffer;
-            std::string filepath;
+            std::string file_path;
             WINDOW* win;
         
         public:
-            Sync(const std::string& fname, WINDOW* window) : filepath(fname), win(window) {
+            Sync(const std::string& fname, WINDOW* window) : file_path(fname), win(window) {
                 // add blank like so buffer is not empty
                 buffer.push_back("");
                 // TODO setup swp file to save the temp buffer until user saves the file
