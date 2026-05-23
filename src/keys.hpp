@@ -2,6 +2,7 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <iostream>
+#include <algorithm>
 #include "sync.hpp"
 #ifndef BRINK_KEYS_HPP
 #define BRINK_KEYS_HPP

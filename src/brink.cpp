@@ -34,8 +34,7 @@ int loop(std::string file_path) {
     }
 
     while (status == 0) {
-        wrefresh(sync.get_win());
-        int key = handle_key_press(sync);
+        brink::handle_key_press(sync);
     }
 
     return 0;

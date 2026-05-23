@@ -27,6 +27,8 @@ namespace brink {
             void add_str(int row, int col, const std::string& str);
             void del_str(int row, int col);
             WINDOW *get_win();
+            int row_count() const { return buffer.size(); }
+            int row_len(int row) const { return (row < (int)buffer.size()) ? buffer[row].size() : 0; }
     };
 };
 
