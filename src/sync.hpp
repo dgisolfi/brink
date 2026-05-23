@@ -13,17 +13,21 @@ namespace brink {
         private:
             std::vector<std::string> buffer;
             std::string file_path;
+            std::string swap_file_path;
             WINDOW* win;
         
         public:
             Sync(const std::string& fname, WINDOW* window) : file_path(fname), win(window) {
                 // add blank like so buffer is not empty
-                buffer.push_back("");
-                // TODO setup swp file to save the temp buffer until user saves the file
+                // buffer.push_back("");
+
+                swap_file_path = file_path;
+                swap_file_path.append(".swp");
             };
-            int load(std::string file_path);
+            int load();
+            int save();
             void screen();
-            void file();
+            void file(bool use_swap_file = TRUE);
             void add_str(int row, int col, const std::string& str);
             void del_str(int row, int col);
             WINDOW *get_win();

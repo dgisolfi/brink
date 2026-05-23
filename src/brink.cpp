@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ncurses.h>
 #include "sync.hpp"
 #include "keys.hpp"
 
@@ -6,7 +7,9 @@ void init() {
     initscr();
     // Refresh stdscr so newwin shows up on top
     refresh();
-    cbreak();
+    // cbreak();
+    // Allow for ctr chars to be captured
+    raw();
     // Disable typed char echoing
     noecho();
     // Enable function and arrow keys
@@ -28,9 +31,9 @@ int loop(std::string file_path) {
     keypad(editor_win, TRUE);
 
     brink::Sync sync(file_path, editor_win);
-    int ret = sync.load(file_path);
+    int ret = sync.load();
     if (ret > 0) {
-        // CALL EXIT FUNC
+        brink::quit(sync);
     }
 
     while (status == 0) {

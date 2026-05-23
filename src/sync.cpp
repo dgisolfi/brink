@@ -1,7 +1,7 @@
 #include "sync.hpp"
 
 namespace brink {
-    int Sync::load(std::string file_path) {
+    int Sync::load() {
         std::ifstream file(file_path);
         std::string line;
 
@@ -20,6 +20,12 @@ namespace brink {
         return 0;
     }
 
+    int Sync::save() {
+        Sync::file(FALSE);
+        // TODO: Delete swap file
+        return 0;
+    }
+
     void Sync::screen(){
         int y, x;
         getyx(win, y, x);
@@ -31,10 +37,10 @@ namespace brink {
         wrefresh(win);
     }
 
-    void Sync::file() {
-        // Skip for now to avoid saving files
-        return;
-        std::ofstream out_file(file_path, std::ios::trunc);
+    void Sync::file(bool use_swap_file) {
+        std::string path = swap_file_path;
+        if (!use_swap_file) path = file_path;
+        std::ofstream out_file(path, std::ios::trunc);
         if (out_file.is_open()) {
             for (const auto& line: buffer) {
                 out_file << line << "\n";

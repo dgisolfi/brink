@@ -42,12 +42,15 @@ namespace brink {
     int handle_key_press(Sync& sync) {
         int key = wgetch(sync.get_win());
         switch(key) {
-            case 27: quit(sync); break;
             case KEY_UP:
             case KEY_DOWN:
             case KEY_LEFT:
             case KEY_RIGHT: 
             case KEY_BACKSPACE: cur_move(sync, key); break;
+            case KEY_ENTER: cur_move(sync, KEY_DOWN); break;
+            case 's' & 0x1F: sync.save(); break;
+            case 'c' & 0x1F:
+            case 27: quit(sync); break;
             default: break;
         }
 
