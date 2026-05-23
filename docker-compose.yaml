@@ -1,0 +1,15 @@
+# Author: Daniel N. Gisolfi
+# Filename: docker-compose.yaml
+# Purpose: for isolated development
+# Usage: `make dev`
+
+version: "3"
+services:
+  brink:
+    build: .
+    container_name: brink-dev
+    volumes:
+      - .:/brink
+
+volumes:
+  python-packages:
