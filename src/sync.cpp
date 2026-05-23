@@ -14,16 +14,20 @@ namespace brink {
             std::cerr << "Unable to open file: " << file_path << std::endl;
             return 1;
         }
+
+        Sync::screen();
+        Sync::file();
         return 0;
     }
 
     void Sync::screen(){
-        // clear the window buffer
+        int y, x;
+        getyx(win, y, x);
         werase(win);
         for (size_t i = 0; i < buffer.size(); ++i) {
-            // Write content into buffer inside bounds
             mvwaddnstr(win, i, 0, buffer[i].c_str(), buffer[i].length());
         }
+        wmove(win, y, x);
         wrefresh(win);
     }
 
@@ -55,5 +59,9 @@ namespace brink {
         
         Sync::screen();
         Sync::file();
+    }
+
+    WINDOW *Sync::get_win() {
+        return win;
     }
 };

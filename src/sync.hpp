@@ -26,6 +26,7 @@ namespace brink {
             void file();
             void add_str(int row, int col, const std::string& str);
             void del_str(int row, int col);
+            WINDOW *get_win();
     };
 };
 

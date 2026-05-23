@@ -7,9 +7,9 @@
 #define BRINK_KEYS_HPP
 
 namespace brink {
-    int quit();
-    void cur_move(Sync sync, int direction);
-    int handle_key_press(Sync sync);
+    int quit(Sync& sync);
+    void cur_move(Sync& sync, int direction);
+    int handle_key_press(Sync& sync);
 };
 
 #endif // BRINK_KEYS_HPP

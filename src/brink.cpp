@@ -4,11 +4,13 @@
 
 void init() {
     initscr();
+    // Refresh stdscr so newwin shows up on top
+    refresh();
     cbreak();
     // Disable typed char echoing
     noecho();
     // Enable function and arrow keys
-    keypad(stdscr, TRUE);
+    // keypad(stdscr, TRUE);
     // Enable cursor visibility
     curs_set(1);
 }
@@ -23,6 +25,7 @@ int loop(std::string file_path) {
         std::cerr << "Failed to allocate ncurses window." << std::endl;
         return 1;
     }
+    keypad(editor_win, TRUE);
 
     brink::Sync sync(file_path, editor_win);
     int ret = sync.load(file_path);
@@ -31,7 +34,7 @@ int loop(std::string file_path) {
     }
 
     while (status == 0) {
-        refresh();
+        wrefresh(sync.get_win());
         int key = handle_key_press(sync);
     }
 
@@ -44,9 +47,8 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     std::string file_path = argv[1];
-
+    
     init();
-
     loop(file_path);
 
     return 0;
