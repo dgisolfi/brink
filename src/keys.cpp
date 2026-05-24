@@ -35,22 +35,28 @@ namespace brink {
                     editor.del_str(y, x - 1);
                     wmove(editor.get_win(), y, x - 1);
                 }
-                if ((x == 0) && (editor.row_len(y) == 0)) {
-                    editor.row_delete(y);
+                if (x == 0) {
+                    editor.row_delete(y, x);
                     cur_move(editor, KEY_UP);
-                } else if ((x == 0) && (editor.row_len(y) != 0)) {
-                    // 
-                    editor.log("HELP");
-                }
+                    wmove(editor.get_win(), y - 1, editor.row_len(y - 1) - x);
+                    editor.sync();
+                } 
                 break;
             case KEY_ENTER:
-                editor.row_new(y);
+                editor.row_create(y, x);
+                wmove(editor.get_win(), y, 0);
                 cur_move(editor, KEY_DOWN);
                 break;
-            // KEY_TAB
-            case 9:
-                editor.add_str(y, x, "\t");
-                for (int i = 0; i < 3; ++i) { 
+            case KEY_STAB:
+                editor.log("STAB");
+                for (int i = 1; i < TAB_LENGTH; ++i) {
+                    editor.del_str(y, x);
+                    cur_move(editor, KEY_RIGHT);
+                }
+            case KEY_TAB:
+                // init to 1 so tab length is easier to configure 
+                for (int i = 1; i < TAB_LENGTH; ++i) { 
+                    editor.add_str(y, x, " ");
                     cur_move(editor, KEY_RIGHT);
                 }; 
                 break;
@@ -61,7 +67,7 @@ namespace brink {
     int handle_key_press(Editor& editor) {
         int key = wgetch(editor.get_win());
         switch(key) {
-            case 9: 
+            case KEY_TAB: 
             case KEY_UP:
             case KEY_DOWN:
             case KEY_LEFT:
@@ -72,7 +78,7 @@ namespace brink {
             case KEY_ENTER:  cur_move(editor, KEY_ENTER); break;
             case 's' & 0x1F: editor.save(); break;
             case 'c' & 0x1F:
-            case 27: quit(editor); break;
+            case KEY_ESC: quit(editor); break;
             default: break;
         }
 
@@ -84,6 +90,8 @@ namespace brink {
             editor.add_str(y, x, ch);
             cur_move(editor, KEY_RIGHT);
         }
+
+        // editor.sync();
 
         return 0;
     }

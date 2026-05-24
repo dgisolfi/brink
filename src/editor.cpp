@@ -49,9 +49,9 @@ namespace brink {
         Editor::sync();
     }
 
-    void Editor::del_str(int row, int col) {
+    void Editor::del_str(int row, int col, int len) {
         if (!buffer[row].empty()) {
-            buffer[row].erase(col, 1);
+            buffer[row].erase(col, len);
         }
         
         Editor::sync();

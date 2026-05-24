@@ -7,6 +7,9 @@
 #include "utils.hpp"
 #ifndef BRINK_KEYS_HPP
 #define BRINK_KEYS_HPP
+#define KEY_TAB    9
+#define KEY_ESC    27
+#define TAB_LENGTH 4
 
 namespace brink {
     int quit(Editor& editor);

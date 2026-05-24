@@ -33,11 +33,25 @@ namespace brink {
 
             // Buffer Methods
             void add_str(int row, int col, const std::string& str);
-            void del_str(int row, int col);
+            void del_str(int row, int col, int len = 1);
             int row_count() const { return buffer.size(); };
             int row_len(int row) const { return (row < (int)buffer.size()) ? buffer[row].size() : 0; };
-            void row_delete(int row) { buffer.erase(buffer.begin() + row);  sync(); };
-            void row_new(int row) {  buffer.insert((buffer.begin() + row + 1), ""); sync(); };
+            void row_delete(int row, int col) { 
+                std::string post_cursor = "";
+                post_cursor = buffer[row].substr(col, buffer[row].size());
+                log("debug: " + post_cursor);
+                buffer.erase(buffer.begin() + row);
+                add_str(row - 1, row_len(row - 1), post_cursor);
+                sync(); 
+            };
+            void row_create(int row, int col) {
+                std::string post_cursor = "";
+                post_cursor = buffer[row].substr(col, buffer[row].size());
+                log("debug: " + post_cursor);
+                del_str(row, col, post_cursor.size());
+                buffer.insert((buffer.begin() + row + 1), post_cursor);
+                sync();
+            };
 
             WINDOW *get_win() { return editor_win; };
             std::string get_swap_file_path() { return swap_file_path; };
