@@ -8,21 +8,23 @@ namespace brink {
         exit(0);
     }
 
-    void handle_edit_action(Editor& editor, int direction) {
+    void handle_edit_action(Editor& editor, int action) {
         int x, y;
         getyx(editor.get_win(), y, x);
-        switch(direction) {
+        switch(action) {
             case KEY_UP:
                 if (y > 0) {
                     int nx = std::min(x, editor.row_len(y - 1));
                     wmove(editor.get_win(), y - 1, nx);
                 }
+                editor.window_scroll(y, x);
                 break;
             case KEY_DOWN:
                 if (y < editor.row_count() - 1) {
                     int nx = std::min(x, editor.row_len(y + 1));
                     wmove(editor.get_win(), y + 1, nx);
                 }
+                editor.window_scroll(y, x);
                 break;
             case KEY_LEFT:
                 if (x > 0) wmove(editor.get_win(), y, x - 1);
@@ -62,7 +64,7 @@ namespace brink {
                     handle_edit_action(editor, KEY_RIGHT);
                 }; 
                 break;
-            default: std::cerr << "Invalid direction: %d" << direction;
+            default: editor.log("Invalid action: " + std::to_string(action));
         }
     }
 

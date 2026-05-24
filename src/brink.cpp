@@ -13,12 +13,10 @@ brink::Editor* init(const std::string& file_path) {
     raw();
     // Disable typed char echoing
     noecho();
-    // Enable function and arrow keys
-    // keypad(stdscr, TRUE);
     // Enable cursor visibility
     curs_set(1);
 
-    int log_height = 2;
+    int log_height = LOG_HEIGHT;
     int editor_height = LINES - log_height;
 
     WINDOW* editor_win = newwin(editor_height, COLS, 0, 0);

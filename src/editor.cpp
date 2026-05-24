@@ -19,11 +19,14 @@ namespace brink {
     }
 
     void Editor::sync_screen(){
-        int y, x;
+        int y, x, editor_max_x;
         getyx(editor_win, y, x);
+        getmaxyx(editor_win, editor_max_y, editor_max_x);
         werase(editor_win);
-        for (size_t i = 0; i < buffer.size(); ++i) {
-            mvwaddnstr(editor_win, i, 0, buffer[i].c_str(), buffer[i].length());
+        for (int i = 0; i < editor_max_y; ++i) {
+            int buf_idx = i + scroll_offset;
+            if (buf_idx < 0 || buf_idx >= (int)buffer.size()) break;
+            mvwaddnstr(editor_win, i, 0, buffer[buf_idx].c_str(), buffer[buf_idx].length());
         }
         wmove(editor_win, y, x);
         wrefresh(editor_win);

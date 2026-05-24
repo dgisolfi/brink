@@ -8,18 +8,24 @@
 #include "utils.hpp"
 #ifndef BRINK_SYNC_HPP
 #define BRINK_SYNC_HPP
+#define LOG_HEIGHT 2
 
 namespace brink {
     class Editor {
         private:
+            int scroll_offset;
+            int editor_max_y;
+            int editor_max_x;
             std::string file_path;
             std::string swap_file_path;
             std::vector<std::string> buffer;
             WINDOW* editor_win;
             WINDOW* log_win;
-        
+
         public:
-            Editor(const std::string &fname, WINDOW *e_win, WINDOW *l_win) : file_path(fname), editor_win(e_win), log_win(l_win) {
+            Editor(const std::string &fname, WINDOW *e_win, WINDOW *l_win)
+                : file_path(fname), editor_win(e_win), log_win(l_win),
+                  scroll_offset(0), editor_max_y(0), editor_max_x(0) {
                 swap_file_path = file_path;
                 swap_file_path.append(".swp");
             };
@@ -32,6 +38,17 @@ namespace brink {
             void sync_file(bool use_swap_file = TRUE);
 
             // Buffer Methods
+            void window_scroll(int y, int x) {
+                int max_row, max_col;
+                getmaxyx(editor_win, max_row, max_col);
+                editor_max_y = max_row;
+                if (y == 0) { scroll_offset--; }
+                else if ((y + LOG_HEIGHT - 1) == max_row) { scroll_offset++; }
+                // limit offset to within buffer size
+                scroll_offset = std::max(0, scroll_offset);
+                scroll_offset = std::min(scroll_offset, std::max(0, (int)buffer.size() - editor_max_y));
+                sync();
+            }
             void add_str(int row, int col, const std::string& str);
             void del_str(int row, int col, int len = 1);
             int row_count() const { return buffer.size(); };
@@ -59,6 +76,7 @@ namespace brink {
                 std::string log_msg = "\n[brink] => " + msg;
                 wprintw(log_win, "%s", log_msg.c_str());
                 wrefresh(log_win);
+                wrefresh(editor_win);
             }
     };
 };
