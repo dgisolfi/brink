@@ -12,9 +12,9 @@
 namespace brink {
     class Sync {
         private:
-            std::vector<std::string> buffer;
             std::string file_path;
             std::string swap_file_path;
+            std::vector<std::string> buffer;
             WINDOW* win;
         
         public:
@@ -35,6 +35,7 @@ namespace brink {
             WINDOW *get_win();
             int row_count() const { return buffer.size(); }
             int row_len(int row) const { return (row < (int)buffer.size()) ? buffer[row].size() : 0; }
+            std::string get_swap_file_path() { return swap_file_path; };
     };
 };
 

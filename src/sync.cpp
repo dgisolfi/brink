@@ -69,7 +69,7 @@ namespace brink {
     }
 
     void Sync::new_line() {
-        buffer.push_back("\n");
+        buffer.push_back("");
         Sync::screen();
         Sync::file();
     }

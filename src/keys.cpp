@@ -2,6 +2,7 @@
 
 namespace brink {
     int quit(Sync& sync) {
+        brink::del_file(sync.get_swap_file_path());
         delwin(sync.get_win());
         endwin();
         exit(0);
@@ -47,6 +48,8 @@ namespace brink {
             case KEY_LEFT:
             case KEY_RIGHT: 
             case KEY_BACKSPACE: cur_move(sync, key); break;
+            case '\r':
+            case '\n':
             case KEY_ENTER: 
                 sync.new_line();
                 cur_move(sync, KEY_DOWN);
@@ -54,6 +57,12 @@ namespace brink {
             case 's' & 0x1F: sync.save(); break;
             case 'c' & 0x1F:
             case 27: quit(sync); break;
+            case 9: 
+                for (int i = 0; i < 3; ++i) { 
+                    cur_move(sync, KEY_RIGHT);
+                    sync.add_str()
+                }; 
+                break;
             default: break;
         }
 

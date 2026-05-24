@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include "sync.hpp"
+#include "utils.hpp"
 #ifndef BRINK_KEYS_HPP
 #define BRINK_KEYS_HPP
 
