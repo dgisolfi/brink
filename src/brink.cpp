@@ -1,6 +1,6 @@
 #include <iostream>
 #include <ncurses.h>
-#include "sync.hpp"
+#include "editor.hpp"
 #include "keys.hpp"
 
 void init() {
@@ -30,14 +30,14 @@ int loop(std::string file_path) {
     }
     keypad(editor_win, TRUE);
     
-    brink::Sync sync(file_path, editor_win);
-    int ret = sync.load();
+    brink::Editor editor(file_path, editor_win);
+    int ret = editor.load();
     if (ret > 0) {
-        brink::quit(sync);
+        brink::quit(editor);
     }
 
     while (status == 0) {
-        brink::handle_key_press(sync);
+        brink::handle_key_press(editor);
     }
 
     return 0;

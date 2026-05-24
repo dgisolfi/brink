@@ -3,15 +3,15 @@
 #include <stdlib.h>
 #include <iostream>
 #include <algorithm>
-#include "sync.hpp"
+#include "editor.hpp"
 #include "utils.hpp"
 #ifndef BRINK_KEYS_HPP
 #define BRINK_KEYS_HPP
 
 namespace brink {
-    int quit(Sync& sync);
-    void cur_move(Sync& sync, int direction);
-    int handle_key_press(Sync& sync);
+    int quit(Editor& editor);
+    void cur_move(Editor& editor, int direction);
+    int handle_key_press(Editor& editor);
 };
 
 #endif // BRINK_KEYS_HPP
