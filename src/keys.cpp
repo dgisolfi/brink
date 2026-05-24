@@ -35,6 +35,21 @@ namespace brink {
                     editor.del_str(y, x - 1);
                     wmove(editor.get_win(), y, x - 1);
                 }
+                if ((x == 0) && (editor.row_len(y) == 0)) {
+                    editor.row_delete(y);
+                    cur_move(editor, KEY_UP);
+                }
+                break;
+            case KEY_ENTER:
+                editor.row_new(y);
+                cur_move(editor, KEY_DOWN);
+                break;
+            // KEY_TAB
+            case 9:
+                editor.add_str(y, x, "\t");
+                for (int i = 0; i < 3; ++i) { 
+                    cur_move(editor, KEY_RIGHT);
+                }; 
                 break;
             default: std::cerr << "Invalid direction: %d" << direction;
         }
@@ -43,6 +58,7 @@ namespace brink {
     int handle_key_press(Editor& editor) {
         int key = wgetch(editor.get_win());
         switch(key) {
+            case 9: 
             case KEY_UP:
             case KEY_DOWN:
             case KEY_LEFT:
@@ -50,19 +66,10 @@ namespace brink {
             case KEY_BACKSPACE: cur_move(editor, key); break;
             case '\r':
             case '\n':
-            case KEY_ENTER: 
-                editor.new_line();
-                cur_move(editor, KEY_DOWN);
-                break;
+            case KEY_ENTER:  cur_move(editor, KEY_ENTER); break;
             case 's' & 0x1F: editor.save(); break;
             case 'c' & 0x1F:
             case 27: quit(editor); break;
-            case 9: 
-                for (int i = 0; i < 3; ++i) { 
-                    cur_move(editor, KEY_RIGHT);
-                    // editor.add_str();
-                }; 
-                break;
             default: break;
         }
 
