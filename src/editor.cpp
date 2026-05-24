@@ -11,7 +11,6 @@ namespace brink {
             }
             file.close();
         } else {
-            std::cerr << "Unable to open file: " << file_path << std::endl;
             return 1;
         }
 

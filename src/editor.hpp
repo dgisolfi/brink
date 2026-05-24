@@ -23,12 +23,15 @@ namespace brink {
                 swap_file_path = file_path;
                 swap_file_path.append(".swp");
             };
+
+            // I/O Methods
             int load();
-            int save() { sync_file(FALSE); return 0; };
+            int save() { sync_file(FALSE); log("Saved file: " + file_path); return 0; };
             void sync() { sync_screen(); sync_file(); };
             void sync_screen();
             void sync_file(bool use_swap_file = TRUE);
 
+            // Buffer Methods
             void add_str(int row, int col, const std::string& str);
             void del_str(int row, int col);
             int row_count() const { return buffer.size(); };
@@ -39,7 +42,7 @@ namespace brink {
             WINDOW *get_win() { return editor_win; };
             std::string get_swap_file_path() { return swap_file_path; };
             void log(std::string msg) {
-                std::string log_msg = "[brink] => " + msg + "\n";
+                std::string log_msg = "\n[brink] => " + msg;
                 wprintw(log_win, "%s", log_msg.c_str());
                 wrefresh(log_win);
             }

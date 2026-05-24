@@ -38,6 +38,9 @@ namespace brink {
                 if ((x == 0) && (editor.row_len(y) == 0)) {
                     editor.row_delete(y);
                     cur_move(editor, KEY_UP);
+                } else if ((x == 0) && (editor.row_len(y) != 0)) {
+                    // 
+                    editor.log("HELP");
                 }
                 break;
             case KEY_ENTER:

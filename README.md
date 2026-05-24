@@ -2,7 +2,12 @@
 
 Basic text editor
 
-TODO:
+## Development Container
+```
+docker compose run brink
+```
 
-- [x] Fix enter key, newline at row + 1, not end of file.
-
+Compile and Run
+```
+make clean && make && ./bin/brink README.md
+```
