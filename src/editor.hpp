@@ -9,10 +9,14 @@
 #ifndef BRINK_SYNC_HPP
 #define BRINK_SYNC_HPP
 #define LOG_HEIGHT 2
+#define MODE_VIEW 0
+#define MODE_EDIT 1
+
 
 namespace brink {
     class Editor {
         private:
+            int mode;
             int scroll_offset;
             int editor_max_y;
             int editor_max_x;
@@ -25,11 +29,18 @@ namespace brink {
         public:
             Editor(const std::string &fname, WINDOW *e_win, WINDOW *l_win)
                 : file_path(fname), editor_win(e_win), log_win(l_win),
-                  scroll_offset(0), editor_max_y(0), editor_max_x(0) {
+                  scroll_offset(0), editor_max_y(0), editor_max_x(0), mode(0) {
                 swap_file_path = file_path;
                 swap_file_path.append(".swp");
             };
 
+            void quit() {
+                brink::del_file(swap_file_path);
+                delwin(editor_win);
+                delwin(log_win);
+                endwin();
+                exit(0);
+            }
             // I/O Methods
             int load();
             int save() { sync_file(FALSE); log("Saved file: " + file_path); return 0; };
@@ -67,10 +78,23 @@ namespace brink {
                 sync();
             };
 
+            // Modes
+            int get_mode() { return mode; }
+            void set_mode(int m) { mode = m; log("Switched mode to " + get_mode_name()); }
+            std::string get_mode_name() {
+                std::string m_name;
+                switch(mode) {
+                    case MODE_EDIT: m_name = "edit"; break;
+                    default: m_name = "view"; break;
+                }
+                return m_name;
+            }
+
             WINDOW *get_win() { return editor_win; };
             std::string get_swap_file_path() { return swap_file_path; };
             void log(std::string msg) {
-                std::string log_msg = "\n[brink] => " + msg;
+                std::string log_msg = "\nm=" + get_mode_name();
+                log_msg.append(" [brink] => " + msg);
                 wprintw(log_win, "%s", log_msg.c_str());
                 wrefresh(log_win);
                 wrefresh(editor_win);

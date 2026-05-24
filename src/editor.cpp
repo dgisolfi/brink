@@ -29,6 +29,7 @@ namespace brink {
             mvwaddnstr(editor_win, i, 0, buffer[buf_idx].c_str(), buffer[buf_idx].length());
         }
         wmove(editor_win, y, x);
+        // mvwvline(editor_win, 1, 80, ACS_VLINE, editor_max_y);
         wrefresh(editor_win);
     }
 
