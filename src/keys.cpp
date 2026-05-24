@@ -8,7 +8,7 @@ namespace brink {
         exit(0);
     }
 
-    void cur_move(Editor& editor, int direction) {
+    void handle_edit_action(Editor& editor, int direction) {
         int x, y;
         getyx(editor.get_win(), y, x);
         switch(direction) {
@@ -37,27 +37,29 @@ namespace brink {
                 }
                 if (x == 0) {
                     editor.row_delete(y, x);
-                    cur_move(editor, KEY_UP);
+                    handle_edit_action(editor, KEY_UP);
                     wmove(editor.get_win(), y - 1, editor.row_len(y - 1) - x);
                     editor.sync();
                 } 
                 break;
+            case '\r':
+            case '\n':
             case KEY_ENTER:
                 editor.row_create(y, x);
                 wmove(editor.get_win(), y, 0);
-                cur_move(editor, KEY_DOWN);
+                handle_edit_action(editor, KEY_DOWN);
                 break;
             case KEY_STAB:
                 editor.log("STAB");
                 for (int i = 1; i < TAB_LENGTH; ++i) {
                     editor.del_str(y, x);
-                    cur_move(editor, KEY_RIGHT);
+                    handle_edit_action(editor, KEY_RIGHT);
                 }
             case KEY_TAB:
                 // init to 1 so tab length is easier to configure 
                 for (int i = 1; i < TAB_LENGTH; ++i) { 
                     editor.add_str(y, x, " ");
-                    cur_move(editor, KEY_RIGHT);
+                    handle_edit_action(editor, KEY_RIGHT);
                 }; 
                 break;
             default: std::cerr << "Invalid direction: %d" << direction;
@@ -66,33 +68,21 @@ namespace brink {
 
     int handle_key_press(Editor& editor) {
         int key = wgetch(editor.get_win());
-        switch(key) {
-            case KEY_TAB: 
-            case KEY_UP:
-            case KEY_DOWN:
-            case KEY_LEFT:
-            case KEY_RIGHT: 
-            case KEY_BACKSPACE: cur_move(editor, key); break;
-            case '\r':
-            case '\n':
-            case KEY_ENTER:  cur_move(editor, KEY_ENTER); break;
-            case 's' & 0x1F: editor.save(); break;
-            case 'c' & 0x1F:
-            case KEY_ESC: quit(editor); break;
-            default: break;
-        }
-
         // For normal alpha numeric keys just print to screend and advance cursor
         if ((32 <= key) && (key <= 126)) {
             int x, y;
             getyx(editor.get_win(), y, x);
             const std::string& ch = std::string(1, static_cast<char>(key));
             editor.add_str(y, x, ch);
-            cur_move(editor, KEY_RIGHT);
+            handle_edit_action(editor, KEY_RIGHT);
+        } else {
+            switch(key) {
+                case 's' & 0x1F: editor.save(); break;
+                case 'c' & 0x1F:
+                case KEY_ESC: quit(editor); break;
+                default: handle_edit_action(editor, key); break;
+            }
         }
-
-        // editor.sync();
-
         return 0;
     }
 }
