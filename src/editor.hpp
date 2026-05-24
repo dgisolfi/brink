@@ -38,13 +38,12 @@ namespace brink {
             void sync_file(bool use_swap_file = TRUE);
 
             // Buffer Methods
-            void window_scroll(int y, int x) {
-                int max_row, max_col;
-                getmaxyx(editor_win, max_row, max_col);
-                editor_max_y = max_row;
-                if (y == 0) { scroll_offset--; }
-                else if ((y + LOG_HEIGHT - 1) == max_row) { scroll_offset++; }
-                // limit offset to within buffer size
+            int get_scroll_offset() const { return scroll_offset; }
+            void scroll_by(int delta) {
+                int max_y, max_x;
+                getmaxyx(editor_win, max_y, max_x);
+                editor_max_y = max_y;
+                scroll_offset += delta;
                 scroll_offset = std::max(0, scroll_offset);
                 scroll_offset = std::min(scroll_offset, std::max(0, (int)buffer.size() - editor_max_y));
                 sync();
@@ -56,7 +55,6 @@ namespace brink {
             void row_delete(int row, int col) { 
                 std::string post_cursor = "";
                 post_cursor = buffer[row].substr(col, buffer[row].size());
-                log("debug: " + post_cursor);
                 buffer.erase(buffer.begin() + row);
                 add_str(row - 1, row_len(row - 1), post_cursor);
                 sync(); 
@@ -64,7 +62,6 @@ namespace brink {
             void row_create(int row, int col) {
                 std::string post_cursor = "";
                 post_cursor = buffer[row].substr(col, buffer[row].size());
-                log("debug: " + post_cursor);
                 del_str(row, col, post_cursor.size());
                 buffer.insert((buffer.begin() + row + 1), post_cursor);
                 sync();

@@ -28,7 +28,7 @@ brink::Editor* init(const std::string& file_path) {
     }
     keypad(editor_win, TRUE);
     // autoscroll for logs
-    // scrollok(editor_win, TRUE);
+    scrollok(editor_win, TRUE);
     scrollok(log_win, TRUE);
 
     start_color();

@@ -9,60 +9,68 @@ namespace brink {
     }
 
     void handle_edit_action(Editor& editor, int action) {
-        int x, y;
+        int x, y, max_y, max_x;
         getyx(editor.get_win(), y, x);
+        getmaxyx(editor.get_win(), max_y, max_x);
+        int buf_row = y + editor.get_scroll_offset();
+
         switch(action) {
-            case KEY_UP:
+            case KEY_UP: {
+                if (buf_row <= 0) break;
+                int nx = std::min(x, editor.row_len(buf_row - 1));
                 if (y > 0) {
-                    int nx = std::min(x, editor.row_len(y - 1));
                     wmove(editor.get_win(), y - 1, nx);
+                } else {
+                    editor.scroll_by(-1);
+                    wmove(editor.get_win(), 0, nx);
                 }
-                editor.window_scroll(y, x);
                 break;
-            case KEY_DOWN:
-                if (y < editor.row_count() - 1) {
-                    int nx = std::min(x, editor.row_len(y + 1));
+            }
+            case KEY_DOWN: {
+                if (buf_row >= editor.row_count() - 1) break;
+                int nx = std::min(x, editor.row_len(buf_row + 1));
+                if (y < max_y - 1) {
                     wmove(editor.get_win(), y + 1, nx);
+                } else {
+                    editor.scroll_by(1);
+                    wmove(editor.get_win(), y, nx);
                 }
-                editor.window_scroll(y, x);
                 break;
+            }
             case KEY_LEFT:
                 if (x > 0) wmove(editor.get_win(), y, x - 1);
                 break;
             case KEY_RIGHT:
-                if (x < editor.row_len(y)) wmove(editor.get_win(), y, x + 1);
+                if (x < editor.row_len(buf_row)) wmove(editor.get_win(), y, x + 1);
                 break;
             case KEY_BACKSPACE:
                 if (x > 0) {
-                    editor.del_str(y, x - 1);
+                    editor.del_str(buf_row, x - 1);
                     wmove(editor.get_win(), y, x - 1);
-                }
-                if (x == 0) {
-                    editor.row_delete(y, x);
+                } else if (buf_row > 0) {
+                    editor.row_delete(buf_row, 0);
                     handle_edit_action(editor, KEY_UP);
-                    wmove(editor.get_win(), y - 1, editor.row_len(y - 1) - x);
-                    editor.sync();
-                } 
+                }
                 break;
             case '\r':
             case '\n':
             case KEY_ENTER:
-                editor.row_create(y, x);
+                editor.row_create(buf_row, x);
                 wmove(editor.get_win(), y, 0);
                 handle_edit_action(editor, KEY_DOWN);
                 break;
-            case KEY_STAB:
+            case 353:
                 editor.log("STAB");
                 for (int i = 1; i < TAB_LENGTH; ++i) {
-                    editor.del_str(y, x);
+                    editor.del_str(buf_row, x);
+                    handle_edit_action(editor, KEY_LEFT);
+                }
+                break;
+            case KEY_TAB:
+                for (int i = 1; i < TAB_LENGTH; ++i) {
+                    editor.add_str(buf_row, x, " ");
                     handle_edit_action(editor, KEY_RIGHT);
                 }
-            case KEY_TAB:
-                // init to 1 so tab length is easier to configure 
-                for (int i = 1; i < TAB_LENGTH; ++i) { 
-                    editor.add_str(y, x, " ");
-                    handle_edit_action(editor, KEY_RIGHT);
-                }; 
                 break;
             default: editor.log("Invalid action: " + std::to_string(action));
         }
@@ -70,12 +78,12 @@ namespace brink {
 
     int handle_key_press(Editor& editor) {
         int key = wgetch(editor.get_win());
-        // For normal alpha numeric keys just print to screend and advance cursor
         if ((32 <= key) && (key <= 126)) {
             int x, y;
             getyx(editor.get_win(), y, x);
+            int buf_row = y + editor.get_scroll_offset();
             const std::string& ch = std::string(1, static_cast<char>(key));
-            editor.add_str(y, x, ch);
+            editor.add_str(buf_row, x, ch);
             handle_edit_action(editor, KEY_RIGHT);
         } else {
             switch(key) {
