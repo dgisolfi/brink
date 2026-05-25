@@ -6,6 +6,7 @@
 brink::Editor* init(const std::string& file_path) {
     setlocale(LC_ALL, "");
     initscr();
+    set_escdelay(25);
     // Refresh stdscr so newwin shows up on top
     refresh();
     // cbreak();
@@ -34,6 +35,7 @@ brink::Editor* init(const std::string& file_path) {
     if (has_colors()) {
         start_color();
         use_default_colors();
+        init_pair(10, COLOR_RED, COLOR_WHITE);
         init_pair(1, COLOR_BLACK, COLOR_WHITE);
         wbkgd(log_win, COLOR_PAIR(1));
     }
