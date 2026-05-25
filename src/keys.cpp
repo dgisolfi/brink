@@ -1,13 +1,15 @@
 #include "keys.hpp"
 
 namespace brink {
+    
     void handle_action(Editor& editor, int action) {
         int x, y, max_y, max_x;
-        getyx(editor.get_win(), y, x);
+        getyx(editor.get_win(), y, x);  
         getmaxyx(editor.get_win(), max_y, max_x);
         int buf_row = y + editor.get_scroll_offset();
 
         switch(action) {
+            /* Movement */
             case KEY_UP: {
                 if (buf_row <= 0) break;
                 int nx = std::min(x, editor.row_len(buf_row - 1));
@@ -36,6 +38,8 @@ namespace brink {
             case KEY_RIGHT:
                 if (x < editor.row_len(buf_row)) wmove(editor.get_win(), y, x + 1);
                 break;
+            /* Edit Operations */ 
+            case KEY_MAC_DEL:
             case KEY_BACKSPACE:
                 if (x > 0) {
                     editor.del_str(buf_row, x - 1);
@@ -104,8 +108,8 @@ namespace brink {
             case KEY_RIGHT:
             case KEY_UP:
             case KEY_DOWN: handle_action(editor, key); break;
-            case KEY_ESC: editor.quit(); break;
-            case 'm': editor.set_mode(MODE_EDIT); break;
+            case KEY_ESC: editor.set_mode(MODE_EDIT); break;
+            case 'q': editor.quit(); break;
             // default: break;
         }
     }

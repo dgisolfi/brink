@@ -7,10 +7,11 @@
 #include "utils.hpp"
 #ifndef BRINK_KEYS_HPP
 #define BRINK_KEYS_HPP
+#define TAB_LENGTH   4
 #define KEY_TAB      9
 #define KEY_ESC      27
 #define KEY_SHFT_TAB 353
-#define TAB_LENGTH   4
+#define KEY_MAC_DEL  127
 
 namespace brink {
     void cur_move(Editor& editor, int direction);

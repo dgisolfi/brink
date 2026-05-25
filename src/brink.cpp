@@ -31,11 +31,11 @@ brink::Editor* init(const std::string& file_path) {
     scrollok(editor_win, TRUE);
     scrollok(log_win, TRUE);
 
-    start_color();
-    if (can_change_color()) {
+    if (has_colors()) {
+        start_color();
         use_default_colors();
-        // init_pair(1, COLOR_BLACK, COLOR_BLUE);
-        // wbkgd(log_win,    ' ' | COLOR_PAIR(1));
+        init_pair(1, COLOR_BLACK, COLOR_WHITE);
+        wbkgd(log_win, COLOR_PAIR(1));
     }
   
     return new brink::Editor(file_path, editor_win, log_win);

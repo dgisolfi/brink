@@ -8,7 +8,7 @@
 #include "utils.hpp"
 #ifndef BRINK_SYNC_HPP
 #define BRINK_SYNC_HPP
-#define LOG_HEIGHT 2
+#define LOG_HEIGHT 1
 #define MODE_VIEW 0
 #define MODE_EDIT 1
 
@@ -92,10 +92,24 @@ namespace brink {
 
             WINDOW *get_win() { return editor_win; };
             std::string get_swap_file_path() { return swap_file_path; };
+
+            void prompt() {
+                init_pair(10, COLOR_RED, COLOR_BLACK);
+                werase(log_win);
+
+                wprintw(log_win, "%s", " [brink] m=");
+                attron(COLOR_PAIR(10));
+                wprintw(log_win, "%s", get_mode_name().c_str());
+                attron(COLOR_PAIR(10));
+
+                wprintw(log_win, "%s", " ~> ");
+
+                wrefresh(log_win);
+
+            };
             void log(std::string msg) {
-                std::string log_msg = "\nm=" + get_mode_name();
-                log_msg.append(" [brink] => " + msg);
-                wprintw(log_win, "%s", log_msg.c_str());
+                prompt();
+                wprintw(log_win, "%s", msg.c_str());
                 wrefresh(log_win);
                 wrefresh(editor_win);
             }
